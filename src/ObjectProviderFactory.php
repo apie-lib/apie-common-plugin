@@ -20,7 +20,7 @@ final class ObjectProviderFactory
         foreach (Finder::create()->in(__DIR__ . '/../../')->files()->name('composer.json')->depth([1]) as $file) {
             $contents = json_decode(file_get_contents((string) $file), true);
             if (is_array($contents['extra']['apie-objects'] ?? null)) {
-                $classNames = [...$classNames, $contents['extra']['apie-objects']];
+                $classNames = [...$classNames, ...$contents['extra']['apie-objects']];
             }
         }
         $code = new AvailableApieObjectProviderGenerator($fileWriter);
