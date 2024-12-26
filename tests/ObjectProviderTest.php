@@ -15,9 +15,9 @@ class ObjectProviderTest extends TestCase
 {
     /**
      * @param class-string<object> $definedClass
-     * @test
-     * @dataProvider provideClasses
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideClasses')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_registers_existing_classes(string $definedClass)
     {
         if (!class_exists(AvailableApieObjectProvider::class)) {
@@ -31,10 +31,12 @@ class ObjectProviderTest extends TestCase
         );
     }
 
-    public function provideClasses(): Generator
+    public static function provideClasses(): Generator
     {
+        // to make sure there is always one test
+        yield Order::class => [Order::class];
         if (!class_exists(AvailableApieObjectProvider::class)) {
-            $this->markTestSkipped('Class could not be found. Did the plugin run?');
+            return;
         }
         $refl = new ReflectionClass(AvailableApieObjectProvider::class);
         foreach ($refl->getConstant('DEFINED_CLASSES') as $definedClass) {
@@ -42,9 +44,7 @@ class ObjectProviderTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_filter_objects()
     {
         $testItem = new class extends ObjectProvider {
